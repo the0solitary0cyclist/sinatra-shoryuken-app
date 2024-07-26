@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Message to SQS</title>
+</head>
+<body>
+  <h1>Send a Message to SQS</h1>
+  <form id="messageForm">
+    <label for="message">Message:</label>
+    <input type="text" id="message" name="message" required>
+    <button type="submit">Send</button>
+  </form>
+  <div id="response"></div>
+
+  <script>
+    document.getElementById('messageForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const message = document.getElementById('message').value;
+
+      const response = await fetch('/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          message: message
+        })
+      });
+
+      const result = await response.json();
+      document.getElementById('response').innerHTML = `
+        <p>${result.message}</p>
+        <p>Message ID: ${result.message_id}</p>
+        <p>Message Body: ${result.message_body}</p>
+      `;
+    });
+  </script>
+</body>
+</html>
